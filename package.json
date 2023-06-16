@@ -2,9 +2,13 @@
   "name": "ezok-programming-test",
   "version": "1.0.0",
   "description": "Programa para coletar dados do site Price Charting",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "bin": {
+    "price-search": "./dist/index.js"
+  },
   "scripts": {
-    "dev": "tsx src/index.ts"
+    "start": "node dist/index.js",
+    "build": "npx tsc"
   },
   "keywords": [],
   "author": "",
@@ -13,10 +17,14 @@
     "@types/cheerio": "^0.22.31",
     "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
-    "pretty": "^2.0.0",
+    "clear": "^0.1.0",
+    "commander": "^11.0.0",
+    "figlet": "^1.6.0",
     "tsx": "^3.12.7"
   },
   "devDependencies": {
+    "@types/clear": "^0.1.2",
+    "@types/figlet": "^1.5.6",
     "@types/node": "^20.3.1",
     "@types/pretty": "^2.0.1",
     "typescript": "^5.1.3"

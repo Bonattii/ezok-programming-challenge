@@ -1,73 +1,47 @@
-import cheerio from 'cheerio';
+#!/usr/bin/env node
 
-import Game from './types/Game';
-import { api } from './lib/api';
+import clear from 'clear';
+import figlet from 'figlet';
+import { Command } from 'commander';
 
-const videoGameName = 'Zelda';
+import getScrapedData from './helpers/getScrapedData';
 
-// Async function which scrapes the data
-const scrapeData = async (videoGameName: string) => {
-  try {
-    // Fetch HTML of the page we want to scrape
-    const { data } = await api.get(videoGameName);
-    // Load HTML we fetched in the previous line using cheerio
-    const $ = cheerio.load(data);
+clear();
 
-    // Select all the table rows in games_table
-    const listItems = $('#games_table tbody tr');
-    // Stores data for all games
-    const games: Game[] = [];
-    // Use .each method to loop through the li we selected
-    listItems.each((index, element) => {
-      // Object holding data for each game
-      const game: Game = {
-        id: '',
-        title: '',
-        console: '',
-        lowPrice: '',
-        midPrice: '',
-        highPrice: ''
-      };
+// Set program to an instance of Command
+const program = new Command();
 
-      // Get the game info and store into the object
-      game.id = $(element).attr('id')!;
+console.log(figlet.textSync('price-search', { horizontalLayout: 'full' }));
 
-      // Take out the space on the beginning and the extra lines
-      game.title = $(element)
-        .children('.title')
-        .children('a')
-        .text()
-        .replace(/\r?\n|\r/g, '')
-        .trimStart();
+// Configure the CLI with the options required
+program
+  .version('1.0.0')
+  .description('A CLI to do video games price search')
+  .option(
+    '--search <query>',
+    'Search for a game price, giving the name as a query'
+  )
+  .option('--detail <value>', 'See the details of a game after searched')
+  .parse(process.argv);
 
-      // Take out the space on the end and on the beginning and the extra lines
-      game.console = $(element)
-        .children('.console')
-        .text()
-        .replace(/\r?\n|\r/g, '')
-        .trimEnd()
-        .trimStart();
+const options = program.opts();
 
-      // Get the prices
-      game.lowPrice = $(element)
-        .children('.used_price')
-        .children('span')
-        .text();
-      game.midPrice = $(element).children('.cib_price').children('span').text();
-      game.highPrice = $(element)
-        .children('.new_price')
-        .children('span')
-        .text();
+// Get the arguments that the user has passed and get the index where it is the --search flag
+const args = process.argv.slice(2);
+const searchIndex = args.findIndex(arg => arg === '--search');
 
-      // Populate games array with country data
-      games.push(game);
-    });
-    // Logs countries array to the console
-    console.dir(games);
-  } catch (err) {
-    console.error(err);
-  }
-};
+// Check if the searchIndex exists && that it is not the last index of args (that have something after)
+if (searchIndex !== -1 && searchIndex < args.length - 1) {
+  // Get all the words after --search and join into a single string when spaces happens and change for +
+  const searchQuery = args
+    .slice(searchIndex + 1)
+    .join(' ')
+    .replace(/ /g, '+');
 
-// Invoke the above function
-scrapeData(videoGameName);
+  getScrapedData(searchQuery);
+}
+
+// If the user don't pass any options, will show the help page
+if (!process.argv.slice(2).length) {
+  program.outputHelp();
+}

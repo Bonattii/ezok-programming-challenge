@@ -1,5 +1,5 @@
 type Game = {
-  id: string;
+  id: number;
   title: string;
   console: string;
   lowPrice: string;
