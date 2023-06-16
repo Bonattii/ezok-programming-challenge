@@ -1,4 +1,5 @@
 import cheerio from 'cheerio';
+import fs from 'fs';
 
 import Game from '../types/Game';
 import { api } from '../lib/api';
@@ -64,8 +65,16 @@ const getScrapedData = async (videoGameName: string) => {
 
     printTable(games);
     console.log(
-      '\nUse the --detail option to see details about a specific game above'
+      '\n\nUse the --detail option to see details about a specific game above\n\n'
     );
+
+    // Write the data into a json file
+    const scrapedGamesJson = JSON.stringify(games);
+    fs.writeFile('scraped-data.json', scrapedGamesJson, err => {
+      if (err) {
+        throw err;
+      }
+    });
   } catch (err) {
     console.error(err);
   }

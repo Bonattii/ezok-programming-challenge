@@ -5,6 +5,7 @@ import figlet from 'figlet';
 import { Command } from 'commander';
 
 import getScrapedData from './helpers/getScrapedData';
+import getSpecificRow from './helpers/getSpecificRow';
 
 clear();
 
@@ -39,6 +40,11 @@ if (searchIndex !== -1 && searchIndex < args.length - 1) {
     .replace(/ /g, '+');
 
   getScrapedData(searchQuery);
+}
+
+// Check if the user typed the detail command
+if (options.detail) {
+  getSpecificRow(Number(options.detail));
 }
 
 // If the user don't pass any options, will show the help page
