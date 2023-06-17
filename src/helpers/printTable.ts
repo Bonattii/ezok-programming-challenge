@@ -33,7 +33,13 @@ const printTable = (data: Game[]) => {
   console.log(separator);
   console.log(
     Object.keys(columnLengths)
-      .map(key => String(key).padEnd(columnLengths[key])) // Will transform the key into a string and pad the end with the size of the column
+      .map(key =>
+        String(key)
+          .split(/(?=[A-Z])/)
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ')
+          .padEnd(columnLengths[key])
+      ) // Will transform the key into a string and pad the end with the size of the column
       .join(' | ')
   );
   console.log(separator);

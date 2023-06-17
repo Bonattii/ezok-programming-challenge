@@ -1,6 +1,6 @@
 import fs from 'fs';
 import Game from '../types/Game';
-import printTable from './printTable';
+import getGameDetailScrapedData from './getGameDetailScrapedData';
 
 const getSpecificRow = (id: number) => {
   if (fs.existsSync('scraped-data.json')) {
@@ -22,12 +22,8 @@ const getSpecificRow = (id: number) => {
       return game.id === id;
     });
 
-    printTable(specificGame);
-
-    console.log(
-      '\n\nUse the --detail option to see details about a specific game above'
-    );
-    console.log('\nOr use the --search option to make a new seach\n\n');
+    // Scrape the data for the specific game
+    getGameDetailScrapedData(specificGame[0]);
   } else {
     console.log(
       '\n\nYou need to use the search option before using the detail option\n\n'

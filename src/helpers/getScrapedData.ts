@@ -2,14 +2,16 @@ import cheerio from 'cheerio';
 import fs from 'fs';
 
 import Game from '../types/Game';
-import { api } from '../lib/api';
+import api from '../lib/api';
 import printTable from './printTable';
 
 // Async function which scrapes the data
 const getScrapedData = async (videoGameName: string) => {
   try {
     // Fetch HTML of the page we want to scrape
-    const { data } = await api.get(videoGameName);
+    const { data } = await api.get(
+      `/search-products?type=prices&q=${videoGameName}`
+    );
 
     // Load HTML we fetched in the previous line using cheerio
     const $ = cheerio.load(data);
@@ -46,8 +48,7 @@ const getScrapedData = async (videoGameName: string) => {
         .children('.console')
         .text()
         .replace(/\r?\n|\r/g, '')
-        .trimEnd()
-        .trimStart();
+        .trim();
 
       // Get the prices
       game.lowPrice = $(element)
